@@ -15,24 +15,20 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 @Getter
 @Entity
-public class User {
+public class WishList {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int userId;
+    public int wishListId;
 
-    private String userName;
+    @ManyToOne
+    public User user;
 
-    private String password;
-
-    private String email;
-
-    private String oauth;
+    public String productId;
 
     @CreationTimestamp
     private Timestamp createDate;
 
     @UpdateTimestamp
     private Timestamp updateDate;
-
 }

@@ -11,23 +11,20 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.sql.Timestamp;
 
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Entity
-public class User {
+public class DeliveryAddress {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int userId;
+    private int deliveryId;
 
-    private String userName;
+    @ManyToOne
+    private User user;
 
-    private String password;
-
-    private String email;
-
-    private String oauth;
+    private String Address;
 
     @CreationTimestamp
     private Timestamp createDate;
