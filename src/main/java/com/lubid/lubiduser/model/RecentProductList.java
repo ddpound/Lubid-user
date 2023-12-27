@@ -1,6 +1,9 @@
 package com.lubid.lubiduser.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -11,18 +14,17 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.sql.Timestamp;
 
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Entity
-public class MyLiveList {
+public class RecentProductList {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int myLiveListId;
+    private int id;
 
-    @ManyToOne
-    private User user;
+    private String product_id;
 
     @CreationTimestamp
     private Timestamp createDate;

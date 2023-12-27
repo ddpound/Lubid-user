@@ -1,13 +1,8 @@
 package com.lubid.lubiduser.Controller;
 
-import com.lubid.lubiduser.Repository.UserRepository;
 import com.lubid.lubiduser.Service.UserService;
 import com.lubid.lubiduser.model.User;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.repository.query.Param;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
@@ -29,6 +24,12 @@ public class UserController {
     public int saveUser(@RequestBody User user){
         userService.createUser(user);
         return 1;
+    }
+
+    @PostMapping(value = "login-user")
+    public String loginUser(@RequestBody User user){
+
+        return "jwt";
     }
 
     @GetMapping(value = "find-user/sample")

@@ -2,14 +2,14 @@ package com.lubid.lubiduser.Service;
 
 import com.lubid.lubiduser.Repository.UserRepository;
 import com.lubid.lubiduser.model.User;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
+import io.jsonwebtoken.JwtBuilder;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-
 
 @RequiredArgsConstructor
 @Service
@@ -31,4 +31,12 @@ public class UserService {
         return userRepository.findAll();
     }
 
+    public static String generateJwtToken() {
+        // 사용자 시퀀스를 기준으로 JWT 토큰을 발급하여 반환해줍니다.
+        JwtBuilder builder = Jwts.builder()
+                .setSubject("test")
+                .signWith(SignatureAlgorithm.HS256, "test")
+                .setExpiration(null);                    // Expired Date 구성
+        return builder.compact();
+    }
 }

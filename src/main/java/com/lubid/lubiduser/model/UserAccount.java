@@ -11,18 +11,24 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.sql.Timestamp;
 
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Entity
-public class MyLiveList {
+public class UserAccount {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int myLiveListId;
+    private int id;
 
     @ManyToOne
     private User user;
+
+    private String accountHolder;
+
+    private String bank;
+
+    private String accountNumber;
 
     @CreationTimestamp
     private Timestamp createDate;
