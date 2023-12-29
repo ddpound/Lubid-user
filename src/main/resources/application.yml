@@ -20,3 +20,5 @@ spring:
 
 LUBIDJWT:
   password: 1234
+  expiration-hours: 3
+  issuer: colabear754
