@@ -5,6 +5,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import javax.crypto.spec.SecretKeySpec;
 import java.sql.Timestamp;
@@ -14,21 +15,17 @@ import java.time.temporal.ChronoUnit;
 import java.util.Date;
 
 @PropertySource("classpath:jwt.yml")
-@Component
+@Service
 public class MakeJWT {
-    private final String secretKey;
-    private final long expirationHours;
-    private final String issuer;
 
-    public MakeJWT(
-            @Value("${secret-key}") String secretKey,
-            @Value("${expiration-hours}") long expirationHours,
-            @Value("${issuer}") String issuer
-    ) {
-        this.secretKey = secretKey;
-        this.expirationHours = expirationHours;
-        this.issuer = issuer;
-    }
+    @Value("${jwt-password}")
+    String secretKey;
+
+    @Value("${expiration-hours}")
+    long expirationHours;
+
+    @Value("${issuer}")
+    String issuer;
 
     public String createToken(String userSpecification) {
         return Jwts.builder()

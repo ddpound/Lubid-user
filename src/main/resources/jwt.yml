@@ -1,0 +1,5 @@
+LUBIDJWT:
+  jwt-password: 1234
+  expiration-hours: 3
+  issuer: lubidAdmin
+  default-user-password: 1

@@ -1,5 +1,6 @@
 package com.lubid.lubiduser.model;
 
+import com.lubid.lubiduser.enumpack.AuthAndRoles;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -27,7 +28,9 @@ public class User {
 
     private String email;
 
-    private String oauth;
+    private AuthAndRoles oauth;
+
+    private AuthAndRoles roles;
 
     @CreationTimestamp
     private Timestamp createDate;
