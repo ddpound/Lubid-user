@@ -19,10 +19,10 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
-                .csrf((csrf) -> csrf.ignoringRequestMatchers("/**")) // 모든 uri 무시하기
+                .csrf((csrf) -> csrf.ignoringRequestMatchers("/**")) // 모든 uri csrf 무시하기
                 .authorizeHttpRequests(requests ->
                         requests.requestMatchers("/","/auth/**").permitAll()
-                                .anyRequest().authenticated()	// 그 외의 모든 요청은 인증 필요
+                                .anyRequest().authenticated()
                 )
                 .sessionManagement(sessionManagement ->
                         sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)

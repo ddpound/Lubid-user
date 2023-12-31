@@ -6,6 +6,7 @@ import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,13 +18,16 @@ public class UserService {
 
     private final UserRepository userRepository;
 
+    private final PasswordEncoder passwordEncoder;
+
     public User findUser(int userId){
         Optional<User> resultUser = userRepository.findById(userId);
         return resultUser.get();
     }
 
     public int createUser(User user){
-        userRepository.save(user);
+        userRepository.save(User.builder()
+                        .password(passwordEncoder.encode(user.getPassword())).build());
         return 0;
     }
 
