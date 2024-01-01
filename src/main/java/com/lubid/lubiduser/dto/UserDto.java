@@ -25,7 +25,7 @@ public class UserDto {
     private Timestamp createDate;
     private Timestamp updateDate;
 
-    UserDto(User user){
+    public UserDto(User user){
         this.userId = user.getUserId();
         this.userName = user.getUserName();
         this.email = user.getEmail();

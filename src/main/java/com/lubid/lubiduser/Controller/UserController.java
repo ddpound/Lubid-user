@@ -1,8 +1,10 @@
 package com.lubid.lubiduser.Controller;
 
 import com.lubid.lubiduser.Service.UserService;
+import com.lubid.lubiduser.dto.UserDto;
 import com.lubid.lubiduser.model.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
@@ -17,16 +19,18 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping(value = "find-user/{id}")
-    public User findUserId(@PathVariable String id){
+    public UserDto findUserId(@PathVariable String id){
         return userService.findUser(Integer.parseInt(id));
     }
 
     @PostMapping(value = "save-user")
-    public int saveUser(@RequestBody User user){
-        userService.createUser(user);
-        return 1;
+    public ResponseEntity saveUser(@RequestBody User user){
+        return userService.createUser(user);
     }
 
+    /**
+     * 로그인 성공시 JWT 발급
+     * */
     @PostMapping(value = "login-user")
     public String loginUser(@RequestBody User user){
 
