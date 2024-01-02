@@ -10,6 +10,9 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @Builder
 @AllArgsConstructor
@@ -31,7 +34,7 @@ public class User {
 
     private AuthAndRoles oauth;
 
-    private AuthAndRoles roles;
+    private String roles;
 
     @CreationTimestamp
     private Timestamp createDate;
@@ -39,4 +42,11 @@ public class User {
     @UpdateTimestamp
     private Timestamp updateDate;
 
+    public List<String> getRoleList(){
+        if(this.roles.length() > 0){
+            // , 로 스플릿 해서 배열로 리턴해준다
+            return Arrays.asList(this.roles.split(","));
+        }
+        return new ArrayList<>();
+    }
 }

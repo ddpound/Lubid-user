@@ -22,6 +22,11 @@ public class UserController {
         return userService.findUser(Integer.parseInt(id));
     }
 
+    @GetMapping(value = "find/{username}")
+    public UserDto findByUserName(@PathVariable String username){
+        return userService.findUserName(username);
+    }
+
     @PostMapping(value = "save-user")
     public ResponseEntity saveUser(@RequestBody User user){
         return userService.createUser(user);

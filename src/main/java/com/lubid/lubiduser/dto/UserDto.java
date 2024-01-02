@@ -21,7 +21,7 @@ public class UserDto {
     private String userName;
     private String email;
     private AuthAndRoles oauth;
-    private AuthAndRoles roles;
+    private String roles;
     private Timestamp createDate;
     private Timestamp updateDate;
 

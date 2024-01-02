@@ -4,15 +4,18 @@ import com.lubid.lubiduser.Repository.UserRepository;
 import com.lubid.lubiduser.dto.UserDto;
 import com.lubid.lubiduser.enumpack.AuthAndRoles;
 import com.lubid.lubiduser.model.User;
+import com.lubid.lubiduser.module.MakeJWT;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -31,16 +34,23 @@ public class UserService {
 
     private final PasswordEncoder passwordEncoder;
 
+    private final MakeJWT makeJWT;
+
     public UserDto findUser(int userId){
         Optional<User> resultUser = userRepository.findById(userId);
 
         return new UserDto(resultUser.get());
     }
 
+    public UserDto findUserName(String username){
+        User findUser = userRepository.findByUserName(username);
+        return new UserDto(findUser);
+    }
+
     public ResponseEntity createUser(User user){
 
         if(user.getUserName() != null){
-            User findUser = userRepository.findByUserName(user);
+            User findUser = userRepository.findByUserName(user.getUserName());
 
             if(findUser != null){
                 return new ResponseEntity("already user name", HttpStatus.BAD_REQUEST);
@@ -49,8 +59,8 @@ public class UserService {
             userRepository.save(User.builder()
                     .userName(user.getUserName())
                     .email(user.getEmail())
-                    .password(user.getPassword() != null ? passwordEncoder.encode(user.getPassword()) : defaultUserPassword)
-                    .roles(AuthAndRoles.User) // 첫 가입은 무조건 유저
+                    .password(passwordEncoder.encode(defaultUserPassword))
+                    .roles("ROLE_USER") // 첫 가입은 무조건 유저
                     .oauth(user.getOauth() != null ? user.getOauth() : AuthAndRoles.Lubid)
                     .build());
 
@@ -62,6 +72,30 @@ public class UserService {
 
     public List<User> findAllUser(){
         return userRepository.findAll();
+    }
+
+    // 로그인 성공시 줘야하는 것 바디나 헤더에 JWT 담아주기
+    @Transactional(readOnly = true)
+    public ResponseEntity login(User user){
+        try {
+            if(user.getUserName() != null && user.getPassword() != null){
+                User findUser = userRepository.findByUserName(user.getUserName());
+                if(findUser == null) throw new NullPointerException();
+
+                if(passwordEncoder.matches(user.getPassword(),findUser.getPassword())){
+                    return new ResponseEntity(makeJWT.createToken(findUser.getUserName()),HttpStatus.OK);
+                }
+            }else{
+                return new ResponseEntity("please input username",HttpStatus.BAD_REQUEST);
+            }
+        }catch (NullPointerException e){
+            return new ResponseEntity("not found username",HttpStatus.BAD_REQUEST);
+        }catch (Exception e){
+            e.printStackTrace();
+            return new ResponseEntity("sorry server error",HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return new ResponseEntity("sorry bad request",HttpStatus.BAD_REQUEST);
     }
 
     public static String generateJwtToken() {
