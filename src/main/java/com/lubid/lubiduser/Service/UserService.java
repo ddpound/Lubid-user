@@ -83,7 +83,7 @@ public class UserService {
                 if(findUser == null) throw new NullPointerException();
 
                 if(passwordEncoder.matches(user.getPassword(),findUser.getPassword())){
-                    return new ResponseEntity(makeJWT.createToken(findUser.getUserName()),HttpStatus.OK);
+                    return new ResponseEntity(makeJWT.createToken(findUser),HttpStatus.OK);
                 }
             }else{
                 return new ResponseEntity("please input username",HttpStatus.BAD_REQUEST);

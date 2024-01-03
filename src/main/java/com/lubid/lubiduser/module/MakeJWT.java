@@ -1,5 +1,7 @@
 package com.lubid.lubiduser.module;
 
+import com.lubid.lubiduser.model.User;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,23 +29,23 @@ public class MakeJWT {
     @Value("${issuer}")
     String issuer;
 
-    public String createToken(String userSpecification) {
+    public String createToken(User user) {
         return Jwts.builder()
                 .signWith(new SecretKeySpec(secretKey.getBytes(), SignatureAlgorithm.HS512.getJcaName()))   // HS512 알고리즘을 사용하여 secretKey를 이용해 서명
-                .setSubject(userSpecification)  // JWT 토큰 제목
+                .setSubject(user.getUserName())  // JWT 토큰 제목
+                .claim("user_role", user.getRoles())
                 .setIssuer(issuer)  // JWT 토큰 발급자
                 .setIssuedAt(Timestamp.valueOf(LocalDateTime.now()))    // JWT 토큰 발급 시간
                 .setExpiration(Date.from(Instant.now().plus(expirationHours, ChronoUnit.HOURS)))    // JWT 토큰 만료 시간
                 .compact(); // JWT 토큰 생성
     }
 
-    public String validateTokenAndGetSubject(String token) {
+    public Claims validateTokenAndGetSubject(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(secretKey.getBytes())
                 .build()
                 .parseClaimsJws(token)
-                .getBody()
-                .getSubject();
+                .getBody();
     }
 
 }

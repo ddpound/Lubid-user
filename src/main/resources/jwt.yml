@@ -1,5 +1,5 @@
 LUBIDJWT:
   jwt-password: 10120*32teat12491024u1209481204981204912840192ur0192ru0129ru10r9u12r091ur019r2u120r9u120r912u
   expiration-hours: 3
-  issuer: lubidAdmin
+  issuer: lubid
   default-user-password: 1

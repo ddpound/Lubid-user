@@ -3,6 +3,7 @@ package com.lubid.lubiduser.filters;
 import com.lubid.lubiduser.config.auth.PrincipalDetail;
 import com.lubid.lubiduser.model.User;
 import com.lubid.lubiduser.module.MakeJWT;
+import io.jsonwebtoken.Claims;
 import jakarta.persistence.Column;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,18 +36,22 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
         String token = parseBearerToken(request);
+        Claims tokenClaims = makeJWT.validateTokenAndGetSubject(token);
 
-        System.out.println(token);
-
-        if(token != null){
-            makeJWT.validateTokenAndGetSubject(token); // 토큰 검증코드
-            PrincipalDetail user = new PrincipalDetail(User.builder().userName("test").roles("ROLE_USER").build());
-            AbstractAuthenticationToken authenticated = UsernamePasswordAuthenticationToken.authenticated(user, token, user.getAuthorities());
-            authenticated.setDetails(new WebAuthenticationDetails(request));
-            SecurityContextHolder.getContext().setAuthentication(authenticated);
-        }
-
+        // 토큰 검증과 동시에 아이디 값과 ROLE값을 넣어준다.
+        PrincipalDetail user = new PrincipalDetail(User.builder().userName(tokenClaims.getSubject()).roles(tokenClaims.get("user_role").toString()).build());
+        AbstractAuthenticationToken authenticated = UsernamePasswordAuthenticationToken.authenticated(user, token, user.getAuthorities());
+        authenticated.setDetails(new WebAuthenticationDetails(request));
+        SecurityContextHolder.getContext().setAuthentication(authenticated);
         filterChain.doFilter(request, response);
+    }
+
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+        String[] excludePath = {"/auth/user/login", "/auth/user/join"};
+        String path = request.getRequestURI();
+
+        return Arrays.stream(excludePath).anyMatch(path::startsWith);
     }
 
     private String parseBearerToken(HttpServletRequest request) {
