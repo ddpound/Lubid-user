@@ -31,7 +31,7 @@ public class DeliveryController {
     }
 
     @GetMapping(value = "find/{userName}")
-    public ResponseEntity findByAllDeliveryAddressoOfUser(@RequestParam String userName){
+    public ResponseEntity findByAllDeliveryAddressoOfUser(@PathVariable String userName){
         return new ResponseEntity<>(deliveryService.findAllDeliveryAddressofUser(userName), HttpStatus.OK);
     }
 
