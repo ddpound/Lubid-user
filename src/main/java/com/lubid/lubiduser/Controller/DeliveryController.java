@@ -27,7 +27,6 @@ public class DeliveryController {
 
     @PostMapping("save")
     public ResponseEntity saveAddress(@RequestBody DeliveryAddress deliveryAddress){
-        log.info(deliveryAddress);
         return deliveryService.insertDeliveryAddress(deliveryAddress);
     }
 

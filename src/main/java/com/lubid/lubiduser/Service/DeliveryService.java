@@ -25,6 +25,11 @@ public class DeliveryService {
     @Transactional
     public ResponseEntity<String> insertDeliveryAddress(DeliveryAddress deliveryAddress){
         User finduser =  userRepository.findByUserName(deliveryAddress.getUser().getUserName());
+
+        if(finduser == null){
+            return new ResponseEntity<>("sorry not found user", HttpStatus.BAD_REQUEST);
+        }
+
         deliveryAddress.setUser(finduser);
         addressRepository.save(deliveryAddress);
         return new ResponseEntity<>("success delivery date", HttpStatus.OK);
