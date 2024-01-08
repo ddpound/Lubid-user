@@ -3,6 +3,7 @@ package com.lubid.lubiduser.Service;
 import com.lubid.lubiduser.Repository.DeliveryAddressRepository;
 import com.lubid.lubiduser.Repository.UserRepository;
 import com.lubid.lubiduser.model.DeliveryAddress;
+import com.lubid.lubiduser.model.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
@@ -23,6 +24,8 @@ public class DeliveryService {
 
     @Transactional
     public ResponseEntity<String> insertDeliveryAddress(DeliveryAddress deliveryAddress){
+        User finduser =  userRepository.findByUserName(deliveryAddress.getUser().getUserName());
+        deliveryAddress.setUser(finduser);
         addressRepository.save(deliveryAddress);
         return new ResponseEntity<>("success delivery date", HttpStatus.OK);
     }
