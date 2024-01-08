@@ -24,7 +24,9 @@ public class DeliveryAddress {
     @ManyToOne
     private User user;
 
-    private String Address;
+    private String address;
+
+    private String detailAddress;
 
     @CreationTimestamp
     private Timestamp createDate;

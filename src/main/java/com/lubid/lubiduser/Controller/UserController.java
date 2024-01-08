@@ -5,6 +5,7 @@ import com.lubid.lubiduser.dto.UserDto;
 import com.lubid.lubiduser.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
@@ -37,13 +38,11 @@ public class UserController {
      * */
     @PostMapping(value = "login-user")
     public String loginUser(@RequestBody User user){
-
         return "jwt";
     }
 
     @GetMapping(value = "find-user/sample")
     public List<User> findUserSample(){
-
         RestTemplate restTemplate = new RestTemplate();
         System.out.println(restTemplate.getForEntity("http://localhost:7004/find-all-sample",Object.class));
         return userService.findAllUser();
