@@ -1,5 +1,6 @@
 package com.lubid.lubiduser.filters;
 
+import com.lubid.lubiduser.Repository.UserRepository;
 import com.lubid.lubiduser.config.auth.PrincipalDetail;
 import com.lubid.lubiduser.model.User;
 import com.lubid.lubiduser.module.MakeJWT;
@@ -29,11 +30,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final MakeJWT makeJWT;
 
+    private final UserRepository userRepository;
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
         String token = parseBearerToken(request);
         Claims tokenClaims = makeJWT.validateTokenAndGetSubject(token);
+
+        User findUser = userRepository.findByUserName(tokenClaims.getSubject());
+
+        System.out.println(findUser.toString());
+        System.out.println(findUser.getUserName());
 
         // 토큰 검증과 동시에 아이디 값과 ROLE값을 넣어준다.
         PrincipalDetail user = new PrincipalDetail(User.builder().userName(tokenClaims.getSubject()).roles(tokenClaims.get("user_role").toString()).build());

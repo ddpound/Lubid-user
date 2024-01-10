@@ -12,24 +12,23 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 @Getter
 @Entity
-public class DeliveryAddress {
+public class JwtMappingUser {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int deliveryId;
+    private int id;
 
-    @Setter
-    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn
+    @OneToOne(fetch = FetchType.LAZY)
     private User user;
 
-    private String address;
-
-    private String detailAddress;
+    @Setter
+    @Column(length = 1240)
+    private String token;
 
     @CreationTimestamp
     private Timestamp createDate;
 
     @UpdateTimestamp
     private Timestamp updateDate;
-
 }

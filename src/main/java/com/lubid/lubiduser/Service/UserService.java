@@ -1,8 +1,10 @@
 package com.lubid.lubiduser.Service;
 
+import com.lubid.lubiduser.Repository.JwtMappingRepository;
 import com.lubid.lubiduser.Repository.UserRepository;
 import com.lubid.lubiduser.dto.UserDto;
 import com.lubid.lubiduser.enumpack.AuthAndRoles;
+import com.lubid.lubiduser.model.JwtMappingUser;
 import com.lubid.lubiduser.model.User;
 import com.lubid.lubiduser.module.MakeJWT;
 import io.jsonwebtoken.JwtBuilder;
@@ -31,6 +33,8 @@ public class UserService {
     static String jwtPassword;
 
     private final UserRepository userRepository;
+
+    private final JwtMappingRepository jwtMappingRepository;
 
     private final PasswordEncoder passwordEncoder;
 
@@ -75,15 +79,27 @@ public class UserService {
     }
 
     // 로그인 성공시 줘야하는 것 바디나 헤더에 JWT 담아주기
-    @Transactional(readOnly = true)
+    @Transactional
     public ResponseEntity login(User user){
         try {
             if(user.getUserName() != null && user.getPassword() != null){
                 User findUser = userRepository.findByUserName(user.getUserName());
                 if(findUser == null) throw new NullPointerException();
+                String createToken = makeJWT.createToken(findUser);
+
+                // 종속화
+                JwtMappingUser findJwtMappingUser = jwtMappingRepository.findByUser(findUser);
+
+                // 토큰 매핑 저장
+                if(findJwtMappingUser != null){
+                    // 더티체킹
+                    findJwtMappingUser.setToken(createToken);
+                }else{
+                    jwtMappingRepository.save(JwtMappingUser.builder().user(findUser).token(createToken).build());
+                }
 
                 if(passwordEncoder.matches(user.getPassword(),findUser.getPassword())){
-                    return new ResponseEntity(makeJWT.createToken(findUser),HttpStatus.OK);
+                    return new ResponseEntity(createToken,HttpStatus.OK);
                 }
             }else{
                 return new ResponseEntity("please input username",HttpStatus.BAD_REQUEST);
