@@ -85,20 +85,20 @@ public class UserService {
             if(user.getUserName() != null && user.getPassword() != null){
                 User findUser = userRepository.findByUserName(user.getUserName());
                 if(findUser == null) throw new NullPointerException();
-                String createToken = makeJWT.createToken(findUser);
-
-                // 종속화
-                JwtMappingUser findJwtMappingUser = jwtMappingRepository.findByUser(findUser);
-
-                // 토큰 매핑 저장
-                if(findJwtMappingUser != null){
-                    // 더티체킹
-                    findJwtMappingUser.setToken(createToken);
-                }else{
-                    jwtMappingRepository.save(JwtMappingUser.builder().user(findUser).token(createToken).build());
-                }
 
                 if(passwordEncoder.matches(user.getPassword(),findUser.getPassword())){
+                    String createToken = makeJWT.createToken(findUser);
+
+                    // 종속화
+                    JwtMappingUser findJwtMappingUser = jwtMappingRepository.findByUser(findUser);
+
+                    // 토큰 매핑 저장
+                    if(findJwtMappingUser != null){
+                        // 더티체킹
+                        findJwtMappingUser.setToken(createToken);
+                    }else{
+                        jwtMappingRepository.save(JwtMappingUser.builder().user(findUser).token(createToken).build());
+                    }
                     return new ResponseEntity(createToken,HttpStatus.OK);
                 }
             }else{

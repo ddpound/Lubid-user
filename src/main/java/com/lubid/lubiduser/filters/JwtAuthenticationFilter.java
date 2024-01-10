@@ -1,10 +1,13 @@
 package com.lubid.lubiduser.filters;
 
+import com.lubid.lubiduser.Repository.JwtMappingRepository;
 import com.lubid.lubiduser.Repository.UserRepository;
 import com.lubid.lubiduser.config.auth.PrincipalDetail;
+import com.lubid.lubiduser.model.JwtMappingUser;
 import com.lubid.lubiduser.model.User;
 import com.lubid.lubiduser.module.MakeJWT;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -32,22 +35,30 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final UserRepository userRepository;
 
+    private final JwtMappingRepository jwtMappingRepository;
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
         String token = parseBearerToken(request);
-        Claims tokenClaims = makeJWT.validateTokenAndGetSubject(token);
+        Claims tokenClaims = makeJWT.validateTokenAndGetSubject(token); // 토큰 검증, 에러 발생시 403
 
         User findUser = userRepository.findByUserName(tokenClaims.getSubject());
 
-        System.out.println(findUser.toString());
-        System.out.println(findUser.getUserName());
+        // DB의 토큰 검증, 에러 발생시 자연스럽게 삭제
+        Claims dbFindtokenClaims = makeJWT.validateTokenAndGetSubject(jwtMappingRepository.findByUser(findUser).getToken());
 
-        // 토큰 검증과 동시에 아이디 값과 ROLE값을 넣어준다.
-        PrincipalDetail user = new PrincipalDetail(User.builder().userName(tokenClaims.getSubject()).roles(tokenClaims.get("user_role").toString()).build());
-        AbstractAuthenticationToken authenticated = UsernamePasswordAuthenticationToken.authenticated(user, token, user.getAuthorities());
-        authenticated.setDetails(new WebAuthenticationDetails(request));
-        SecurityContextHolder.getContext().setAuthentication(authenticated);
+        if(dbFindtokenClaims.equals(tokenClaims)){
+            // 토큰 검증과 동시에 아이디 값과 ROLE값을 넣어준다.
+            PrincipalDetail user = new PrincipalDetail(User.builder().userName(tokenClaims.getSubject()).roles(tokenClaims.get("user_role").toString()).build());
+            AbstractAuthenticationToken authenticated = UsernamePasswordAuthenticationToken.authenticated(user, token, user.getAuthorities());
+            authenticated.setDetails(new WebAuthenticationDetails(request));
+            SecurityContextHolder.getContext().setAuthentication(authenticated);
+        }else{
+            JwtMappingUser findJwtMappingUser = jwtMappingRepository.findByUser(findUser);
+            jwtMappingRepository.delete(findJwtMappingUser);
+        }
+
         filterChain.doFilter(request, response);
     }
 

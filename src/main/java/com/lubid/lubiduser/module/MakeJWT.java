@@ -1,13 +1,18 @@
 package com.lubid.lubiduser.module;
 
+import com.lubid.lubiduser.Repository.JwtMappingRepository;
+import com.lubid.lubiduser.Repository.UserRepository;
+import com.lubid.lubiduser.model.JwtMappingUser;
 import com.lubid.lubiduser.model.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.crypto.spec.SecretKeySpec;
 import java.sql.Timestamp;
@@ -17,8 +22,13 @@ import java.time.temporal.ChronoUnit;
 import java.util.Date;
 
 @PropertySource("classpath:jwt.yml")
+@RequiredArgsConstructor
 @Service
 public class MakeJWT {
+
+    private final UserRepository userRepository;
+
+    private final JwtMappingRepository jwtMappingRepository;
 
     @Value("${jwt-password}")
     String secretKey;
@@ -40,12 +50,22 @@ public class MakeJWT {
                 .compact(); // JWT 토큰 생성
     }
 
+    @Transactional
     public Claims validateTokenAndGetSubject(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(secretKey.getBytes())
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
+        try {
+            return Jwts.parserBuilder()
+                    .setSigningKey(secretKey.getBytes())
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+        }catch (Exception e) {
+            e.printStackTrace();
+            User findUser =  userRepository.findByUserName(Jwts.claims().getSubject());
+            JwtMappingUser findJwtMappingUser = jwtMappingRepository.findByUser(findUser);
+            jwtMappingRepository.delete(findJwtMappingUser);
+            return null;
+        }
+
     }
 
 }
