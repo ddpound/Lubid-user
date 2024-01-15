@@ -25,6 +25,11 @@ public class DeliveryController {
         return deliveryService.insertDeliveryAddress(deliveryAddress);
     }
 
+    @PutMapping("change")
+    public ResponseEntity changeAddress(@RequestBody DeliveryAddress deliveryAddress){
+        return deliveryService.updateDeliveryAddress(deliveryAddress);
+    }
+
     @GetMapping(value = "find/{userName}")
     public ResponseEntity findByAllDeliveryAddressoOfUser(@PathVariable String userName){
         return new ResponseEntity<>(deliveryService.findAllDeliveryAddressOfUser(userName), HttpStatus.OK);

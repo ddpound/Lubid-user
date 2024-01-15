@@ -12,6 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Log4j2
 @RequiredArgsConstructor
 @Service
@@ -44,6 +46,29 @@ public class DeliveryService {
         return new ResponseEntity<>("success delivery date", HttpStatus.OK);
     }
 
+    /**
+     * 1. 배송지 수정기능 추가, 수정할때는 배송지의 아이디값을 가져와야함
+     * 2.
+     * */
+    @Transactional
+    public ResponseEntity updateDeliveryAddress(DeliveryAddress deliveryAddress){
+
+        try {
+            Optional<DeliveryAddress> findDeliveryAddress = addressRepository.findById(deliveryAddress.getDeliveryId());
+
+            if(findDeliveryAddress.isPresent()){
+                // 더티체킹
+                findDeliveryAddress.get().setDeliveryAddress(deliveryAddress.getAddress(), deliveryAddress.getDetailAddress());
+                return new ResponseEntity("success update Delivery Address",HttpStatus.OK);
+            }else{
+                return new ResponseEntity("sorry not found user",HttpStatus.BAD_REQUEST);
+            }
+        }catch (Exception e){
+
+            return new ResponseEntity("sorry server error",HttpStatus.SERVICE_UNAVAILABLE);
+        }
+    }
+
     @Transactional(readOnly = true)
     public ResponseEntity findAllDeliveryAddressOfUser(String username){
         // db data
@@ -53,7 +78,7 @@ public class DeliveryService {
             return new ResponseEntity<>("sorry not found user", HttpStatus.BAD_REQUEST);
         }
 
-        if(authCheckModule.usernameCheckAuth(username)){
+        if(!authCheckModule.usernameCheckAuth(username)){
             return new ResponseEntity<>("sorry you don't have auth", HttpStatus.FORBIDDEN);
         }
 

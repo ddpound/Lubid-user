@@ -32,4 +32,9 @@ public class DeliveryAddress {
     @UpdateTimestamp
     private Timestamp updateDate;
 
+    public void setDeliveryAddress(String address, String detailAddress){
+        this.address = address;
+        this.detailAddress = detailAddress;
+    }
+
 }
