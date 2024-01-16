@@ -18,8 +18,7 @@ public class AuthCheckModule {
         if(principal != null){
             UserDetails userDetails = (UserDetails)principal;
             String sessionUsername = userDetails.getUsername();
-            System.out.println(sessionUsername);
-            System.out.println(checkUserName);
+
             return sessionUsername.equals(checkUserName);
         }else{
             return false;

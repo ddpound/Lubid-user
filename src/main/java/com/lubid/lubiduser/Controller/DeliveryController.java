@@ -30,6 +30,11 @@ public class DeliveryController {
         return deliveryService.updateDeliveryAddress(deliveryAddress);
     }
 
+    @DeleteMapping("delete")
+    public ResponseEntity deleteAddress(@RequestBody DeliveryAddress deliveryAddress){
+        return deliveryService.deleteDeliveryAddress(deliveryAddress);
+    }
+
     @GetMapping(value = "find/{userName}")
     public ResponseEntity findByAllDeliveryAddressoOfUser(@PathVariable String userName){
         return new ResponseEntity<>(deliveryService.findAllDeliveryAddressOfUser(userName), HttpStatus.OK);

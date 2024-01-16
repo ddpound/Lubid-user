@@ -61,10 +61,30 @@ public class DeliveryService {
                 findDeliveryAddress.get().setDeliveryAddress(deliveryAddress.getAddress(), deliveryAddress.getDetailAddress());
                 return new ResponseEntity("success update Delivery Address",HttpStatus.OK);
             }else{
-                return new ResponseEntity("sorry not found user",HttpStatus.BAD_REQUEST);
+                return new ResponseEntity("sorry not Delivery Address",HttpStatus.BAD_REQUEST);
             }
         }catch (Exception e){
 
+            return new ResponseEntity("sorry server error",HttpStatus.SERVICE_UNAVAILABLE);
+        }
+    }
+
+    @Transactional
+    public ResponseEntity deleteDeliveryAddress(DeliveryAddress deliveryAddress){
+
+        try {
+            Optional<DeliveryAddress> findDeliveryAddress = addressRepository.findById(deliveryAddress.getDeliveryId());
+
+            if(findDeliveryAddress.isPresent()){
+                if(authCheckModule.usernameCheckAuth(findDeliveryAddress.get().getUser().getUserName())){
+                    addressRepository.delete(findDeliveryAddress.get());
+                    return new ResponseEntity("success delete Delivery Address",HttpStatus.OK);
+                }
+                return new ResponseEntity("FORBIDDEN",HttpStatus.FORBIDDEN);
+            }else{
+                return new ResponseEntity("sorry not found delivery address",HttpStatus.BAD_REQUEST);
+            }
+        }catch (Exception e){
             return new ResponseEntity("sorry server error",HttpStatus.SERVICE_UNAVAILABLE);
         }
     }
