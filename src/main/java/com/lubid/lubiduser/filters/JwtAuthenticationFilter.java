@@ -41,6 +41,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
         String token = parseBearerToken(request);
+        logger.info("jwt filter action");
         Claims tokenClaims = makeJWT.validateTokenAndGetSubject(token); // 토큰 검증, 에러 발생시 403
 
         User findUser = userRepository.findByUserName(tokenClaims.getSubject());
@@ -64,7 +65,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-        String[] excludePath = {"/auth/user/login", "/auth/user/join"};
+        String[] excludePath = {"/lubid-user/auth/user/login", "/lubid-user/auth/user/join", "/lubid-user/auth/test/welcome"};
         String path = request.getRequestURI();
 
         return Arrays.stream(excludePath).anyMatch(path::startsWith);

@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(value = "auth")
+@RequestMapping(value = "lubid-user/auth")
 public class AuthUserController {
 
     private final UserService userService;
