@@ -13,7 +13,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping(value = "user")
+@RequestMapping(value = "lubid-user/user")
 public class UserController {
 
     private final UserService userService;

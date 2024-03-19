@@ -21,7 +21,7 @@ public class AuthUserController {
     }
 
     // 로그인 성골시 JWT발급
-    @GetMapping(value = "user/login")
+    @PostMapping(value = "user/login")
     public ResponseEntity loginUser(@RequestBody User user) {
         return userService.login(user);
     }
