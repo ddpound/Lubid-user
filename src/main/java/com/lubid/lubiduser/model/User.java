@@ -42,6 +42,12 @@ public class User {
     @UpdateTimestamp
     private Timestamp updateDate;
 
+    // 활성화, 비활성화, 마지막 로그인 상태가 길때 자동 비활성화
+    private Boolean enabled;
+
+    // 탈퇴
+    private Boolean withdrawal;
+
     public List<String> getRoleList(){
         if(this.roles.length() > 0){
             // , 로 스플릿 해서 배열로 리턴해준다

@@ -1,4 +1,4 @@
-package com.lubid.lubiduser.Controller;
+package com.lubid.lubiduser.controller;
 
 
 import org.springframework.web.bind.annotation.CrossOrigin;

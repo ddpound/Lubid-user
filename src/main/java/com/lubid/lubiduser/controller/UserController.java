@@ -1,11 +1,10 @@
-package com.lubid.lubiduser.Controller;
+package com.lubid.lubiduser.controller;
 
 import com.lubid.lubiduser.Service.UserService;
 import com.lubid.lubiduser.dto.UserDto;
 import com.lubid.lubiduser.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 

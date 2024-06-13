@@ -1,4 +1,4 @@
-package com.lubid.lubiduser.Controller;
+package com.lubid.lubiduser.controller;
 
 import com.lubid.lubiduser.Service.DeliveryService;
 import com.lubid.lubiduser.Service.UserService;
