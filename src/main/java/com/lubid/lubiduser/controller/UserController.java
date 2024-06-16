@@ -4,12 +4,14 @@ import com.lubid.lubiduser.Service.UserService;
 import com.lubid.lubiduser.dto.UserDto;
 import com.lubid.lubiduser.model.User;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 
+@Log4j2
 @RequiredArgsConstructor
 @RestController
 @RequestMapping(value = "lubid-user/user")
