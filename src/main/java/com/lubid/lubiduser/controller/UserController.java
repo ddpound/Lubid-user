@@ -49,4 +49,7 @@ public class UserController {
         return userService.findAllUser();
     }
 
+    // 권한 주는 엔드포인트 작성 필요
+
+
 }

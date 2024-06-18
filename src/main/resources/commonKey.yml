@@ -1,0 +1,7 @@
+# 해당 파일은 다양한 외부 API 키를 관리하기 위한 파일입니다.
+
+# 사업장등록정보 진위확인 및 상태조회 서비스 키
+BusinessRegistration:
+  encoding-key: ANxzyaic3PDextIzpmB4jVdSuPNE0txa0sduA5AhnYMC1%2BrSUb0M26K5bBkKBoJ%2FV5fCJyAba5I71hbiFf7Icw%3D%3D
+  decoding-key: ANxzyaic3PDextIzpmB4jVdSuPNE0txa0sduA5AhnYMC1+rSUb0M26K5bBkKBoJ/V5fCJyAba5I71hbiFf7Icw==
+  url: https://api.odcloud.kr/api/nts-businessman/v1/status?serviceKey=
