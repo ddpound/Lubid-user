@@ -6,6 +6,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * @author seongjung you
+ * @version 0.0.1
+ */
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value = "lubid-user/auth")

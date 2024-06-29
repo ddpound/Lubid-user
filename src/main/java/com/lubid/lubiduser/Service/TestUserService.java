@@ -12,6 +12,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,9 +22,20 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * @author seongjung you
+ * @since 0.0.1
+ *
+ * 테스트 계정을 위한 테스트 서비스 단
+ * */
+@PropertySource(value = {"classpath:testData.yml","classpath:jwt.yml"})
 @RequiredArgsConstructor
 @Service
-public class UserService {
+public class TestUserService {
+
+    // test key check
+    @Value("${test-key}")
+    String testKey;
 
     @Value("${default-user-password}")
     String defaultUserPassword;
@@ -52,26 +64,32 @@ public class UserService {
     }
 
     @Transactional
-    public ResponseEntity<?> createUser(User user){
+    public ResponseEntity<?> createTestUser(User user){
 
-        if(user.getUserName() != null){
-            User findUser = userRepository.findByUserName(user.getUserName());
+        // check create test user, 테스트 권한 비밀번호 확인
+        // user 객체의 password가 testkey 인증하는 키가 된다.
+        if(user.getPassword().equals(testKey)){
+            if(user.getUserName() != null){
+                User findUser = userRepository.findByUserName(user.getUserName());
 
-            if(findUser != null){
-                return new ResponseEntity<>("already user name", HttpStatus.BAD_REQUEST);
+                if(findUser != null){
+                    return new ResponseEntity<>("already user name", HttpStatus.BAD_REQUEST);
+                }
+
+                userRepository.save(User.builder()
+                        .userName(user.getUserName())
+                        .email(user.getEmail())
+                        .password(passwordEncoder.encode(defaultUserPassword))
+                        .roles("ROLE_USER") // 첫 가입은 무조건 유저
+                        .oauth(user.getOauth() != null ? user.getOauth() : AuthAndRoles.Lubid)
+                        .build());
+
+                return new ResponseEntity<>("success save test user", HttpStatus.OK);
+            }else{
+                return new ResponseEntity<>("please insert test user name", HttpStatus.BAD_REQUEST);
             }
-
-            userRepository.save(User.builder()
-                    .userName(user.getUserName())
-                    .email(user.getEmail())
-                    .password(passwordEncoder.encode(defaultUserPassword))
-                    .roles("ROLE_USER") // 첫 가입은 무조건 유저
-                    .oauth(user.getOauth() != null ? user.getOauth() : AuthAndRoles.Lubid)
-                    .build());
-
-            return new ResponseEntity<>("success save user", HttpStatus.OK);
         }else{
-            return new ResponseEntity<>("please insert user name", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("sorry not same test key password", HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -81,7 +99,7 @@ public class UserService {
 
     // 로그인 성공시 줘야하는 것 바디나 헤더에 JWT 담아주기
     @Transactional
-    public ResponseEntity<?> login(User user){
+    public ResponseEntity<?> testLogin(User user){
         try {
             if(user.getUserName() != null && user.getPassword() != null){
                 User findUser = userRepository.findByUserName(user.getUserName());

@@ -1,0 +1,10 @@
+# 해당 yml 은 테스트를 위한 모든 계정들이 들어있습니다.
+# 테스트 계정은 일반 계쩡과 똑같은 권한을 가지고있다.
+testUserData:
+  test-key: lubidTestTry # 해당 키로 접근시 테스트 계정이라 간주하고 자동 생성이 됩니다.
+  admin:
+    test-admin: lubidTestAdmin
+    test-admin-password: lubid12
+  normalUser:
+    test-user: lubidUser
+    test-user-password: lubid12

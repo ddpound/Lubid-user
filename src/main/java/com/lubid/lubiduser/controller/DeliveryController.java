@@ -21,22 +21,22 @@ public class DeliveryController {
     private final DeliveryService deliveryService;
 
     @PostMapping("save")
-    public ResponseEntity saveAddress(@RequestBody DeliveryAddress deliveryAddress){
+    public ResponseEntity<?> saveAddress(@RequestBody DeliveryAddress deliveryAddress){
         return deliveryService.insertDeliveryAddress(deliveryAddress);
     }
 
     @PutMapping("change")
-    public ResponseEntity changeAddress(@RequestBody DeliveryAddress deliveryAddress){
+    public ResponseEntity<?> changeAddress(@RequestBody DeliveryAddress deliveryAddress){
         return deliveryService.updateDeliveryAddress(deliveryAddress);
     }
 
     @DeleteMapping("delete")
-    public ResponseEntity deleteAddress(@RequestBody DeliveryAddress deliveryAddress){
+    public ResponseEntity<?> deleteAddress(@RequestBody DeliveryAddress deliveryAddress){
         return deliveryService.deleteDeliveryAddress(deliveryAddress);
     }
 
     @GetMapping(value = "find/{userName}")
-    public ResponseEntity findByAllDeliveryAddressoOfUser(@PathVariable String userName){
+    public ResponseEntity<?>findByAllDeliveryAddressoOfUser(@PathVariable String userName){
         return new ResponseEntity<>(deliveryService.findAllDeliveryAddressOfUser(userName), HttpStatus.OK);
     }
 
