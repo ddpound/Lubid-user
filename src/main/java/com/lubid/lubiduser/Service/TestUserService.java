@@ -11,6 +11,8 @@ import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.HttpStatus;
@@ -33,6 +35,7 @@ import java.util.Optional;
 @Service
 public class TestUserService {
 
+    private static final Logger log = LoggerFactory.getLogger(TestUserService.class);
     // test key check
     @Value("${test-key}")
     String testKey;
@@ -64,32 +67,37 @@ public class TestUserService {
     }
 
     @Transactional
-    public ResponseEntity<?> createTestUser(User user){
+    public ResponseEntity<?> createTestUser(User user) {
+        log.info(testKey);
+        try {
+            // check create test user, 테스트 권한 비밀번호 확인
+            // user 객체의 password가 testkey 인증하는 키가 된다.
+            if (user.getPassword().equals(testKey)) {
+                if (user.getUserName() != null) {
+                    User findUser = userRepository.findByUserName(user.getUserName());
 
-        // check create test user, 테스트 권한 비밀번호 확인
-        // user 객체의 password가 testkey 인증하는 키가 된다.
-        if(user.getPassword().equals(testKey)){
-            if(user.getUserName() != null){
-                User findUser = userRepository.findByUserName(user.getUserName());
+                    if (findUser != null) {
+                        return new ResponseEntity<>("already user name", HttpStatus.BAD_REQUEST);
+                    }
 
-                if(findUser != null){
-                    return new ResponseEntity<>("already user name", HttpStatus.BAD_REQUEST);
+                    userRepository.save(User.builder()
+                            .userName(user.getUserName())
+                            .email("test@lubid.com")
+                            .password(passwordEncoder.encode(defaultUserPassword))
+                            .roles("ROLE_USER") // 첫 가입은 무조건 유저
+                            .oauth(user.getOauth() != null ? user.getOauth() : AuthAndRoles.Lubid)
+                            .build());
+
+                    return new ResponseEntity<>("success save test user", HttpStatus.OK);
+                } else {
+                    return new ResponseEntity<>("please insert test user name", HttpStatus.BAD_REQUEST);
                 }
-
-                userRepository.save(User.builder()
-                        .userName(user.getUserName())
-                        .email(user.getEmail())
-                        .password(passwordEncoder.encode(defaultUserPassword))
-                        .roles("ROLE_USER") // 첫 가입은 무조건 유저
-                        .oauth(user.getOauth() != null ? user.getOauth() : AuthAndRoles.Lubid)
-                        .build());
-
-                return new ResponseEntity<>("success save test user", HttpStatus.OK);
-            }else{
-                return new ResponseEntity<>("please insert test user name", HttpStatus.BAD_REQUEST);
+            } else {
+                return new ResponseEntity<>("sorry not same test key password", HttpStatus.BAD_REQUEST);
             }
-        }else{
-            return new ResponseEntity<>("sorry not same test key password", HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            log.info(e.getMessage());
+            return new ResponseEntity<>("error", HttpStatus.BAD_REQUEST);
         }
     }
 

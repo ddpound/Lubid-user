@@ -5,6 +5,7 @@ import com.lubid.lubiduser.Service.TestUserService;
 import com.lubid.lubiduser.Service.UserService;
 import com.lubid.lubiduser.model.User;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
  *
  * test를 위한 엔드포인트
  */
+@Log4j2
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value = "lubid-user/auth/test")
@@ -40,8 +42,8 @@ public class TestAuthUserController {
     // 로그인 시킬 테스트 계정을 받습니다.
     @PostMapping(value = "user/lubid")
     public ResponseEntity<?> loginAndCreateTestUser(@RequestBody User user) {
+        log.info("try login test user : {}", user.getUserName());
 
-        testUserService.createTestUser(user);
-        return  new ResponseEntity<>(HttpStatus.OK);
+        return testUserService.createTestUser(user);
     }
 }
