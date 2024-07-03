@@ -69,6 +69,7 @@ public class TestUserService {
     @Transactional
     public ResponseEntity<?> createTestUser(User user) {
         log.info(testKey);
+        log.info(user.getPassword());
         try {
             // check create test user, 테스트 권한 비밀번호 확인
             // user 객체의 password가 testkey 인증하는 키가 된다.
@@ -76,19 +77,33 @@ public class TestUserService {
                 if (user.getUserName() != null) {
                     User findUser = userRepository.findByUserName(user.getUserName());
 
-                    if (findUser != null) {
-                        return new ResponseEntity<>("already user name", HttpStatus.BAD_REQUEST);
-                    }
-
-                    userRepository.save(User.builder()
+                    User insertUser = User.builder()
                             .userName(user.getUserName())
                             .email("test@lubid.com")
-                            .password(passwordEncoder.encode(defaultUserPassword))
+                            .password(passwordEncoder.encode(testKey))
                             .roles("ROLE_USER") // 첫 가입은 무조건 유저
                             .oauth(user.getOauth() != null ? user.getOauth() : AuthAndRoles.Lubid)
-                            .build());
+                            .build();
 
-                    return new ResponseEntity<>("success save test user", HttpStatus.OK);
+                    if (findUser != null) {
+                        return testLogin(User.builder()
+                                .userName(user.getUserName())
+                                .email("test@lubid.com")
+                                .password(testKey)
+                                .roles("ROLE_USER") // 첫 가입은 무조건 유저
+                                .oauth(user.getOauth() != null ? user.getOauth() : AuthAndRoles.Lubid)
+                                .build());
+                    }else{
+                        userRepository.save(insertUser);
+
+                        return testLogin(User.builder()
+                                .userName(user.getUserName())
+                                .email("test@lubid.com")
+                                .password(testKey)
+                                .roles("ROLE_USER") // 첫 가입은 무조건 유저
+                                .oauth(user.getOauth() != null ? user.getOauth() : AuthAndRoles.Lubid)
+                                .build());
+                    }
                 } else {
                     return new ResponseEntity<>("please insert test user name", HttpStatus.BAD_REQUEST);
                 }
@@ -113,7 +128,7 @@ public class TestUserService {
                 User findUser = userRepository.findByUserName(user.getUserName());
                 if(findUser == null) throw new NullPointerException();
 
-                if(passwordEncoder.matches(user.getPassword(),findUser.getPassword())){
+                if(passwordEncoder.matches(user.getPassword(), findUser.getPassword())){
                     String createToken = makeJWT.createToken(findUser);
 
                     // 종속화
@@ -127,6 +142,8 @@ public class TestUserService {
                         jwtMappingRepository.save(JwtMappingUser.builder().user(findUser).token(createToken).build());
                     }
                     return new ResponseEntity<>(createToken,HttpStatus.OK);
+                }else{
+                    return new ResponseEntity<>("sorry not same test key password", HttpStatus.BAD_REQUEST);
                 }
             }else{
                 return new ResponseEntity<>("please input username",HttpStatus.BAD_REQUEST);
@@ -137,8 +154,6 @@ public class TestUserService {
             e.printStackTrace();
             return new ResponseEntity<>("sorry server error",HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
-        return new ResponseEntity<>("sorry bad request",HttpStatus.BAD_REQUEST);
     }
 
     public static String generateJwtToken() {
