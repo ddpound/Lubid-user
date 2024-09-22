@@ -5,17 +5,18 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.sql.Timestamp;
 
-@Builder
+@SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Entity
-public class UserAccount {
+public class UserAccount extends CommonColumn {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,10 +30,4 @@ public class UserAccount {
     private String bank;
 
     private String accountNumber;
-
-    @CreationTimestamp
-    private Timestamp createDate;
-
-    @UpdateTimestamp
-    private Timestamp updateDate;
 }

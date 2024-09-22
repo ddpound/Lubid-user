@@ -2,17 +2,14 @@ package com.lubid.lubiduser.model;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
+import lombok.experimental.SuperBuilder;
 
-import java.sql.Timestamp;
-
-@Builder
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Entity
-public class DeliveryAddress {
+public class DeliveryAddress extends CommonColumn {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,12 +22,6 @@ public class DeliveryAddress {
     private String address;
 
     private String detailAddress;
-
-    @CreationTimestamp
-    private Timestamp createDate;
-
-    @UpdateTimestamp
-    private Timestamp updateDate;
 
     public void setDeliveryAddress(String address, String detailAddress){
         this.address = address;
