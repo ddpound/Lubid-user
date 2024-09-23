@@ -61,13 +61,18 @@ public class UserService {
                 return new ResponseEntity<>("already user name", HttpStatus.BAD_REQUEST);
             }
 
-            userRepository.save(User.builder()
+            User insertUser = User.builder()
                     .userName(user.getUserName())
                     .email(user.getEmail())
                     .password(passwordEncoder.encode(defaultUserPassword))
                     .roles("ROLE_USER") // 첫 가입은 무조건 유저
                     .oauth(user.getOauth() != null ? user.getOauth() : AuthAndRoles.Lubid)
-                    .build());
+                    .build();
+
+            // 데이터 생성
+            insertUser.createData(1L);
+
+            userRepository.save(insertUser);
 
             return new ResponseEntity<>("success save user", HttpStatus.OK);
         }else{
