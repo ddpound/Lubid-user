@@ -1,6 +1,7 @@
 package com.lubid.lubiduser.runner;
 
 import com.lubid.lubiduser.Service.UserService;
+import com.lubid.lubiduser.model.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.boot.CommandLineRunner;
@@ -30,9 +31,6 @@ public class SystemInit implements CommandLineRunner {
      * */
     public void createSuperAdmin(){
 
-
-
-        userService.createUser(null);
-
+        userService.createUser(User.builder().userId(1).email("admin@admin.com").build());
     }
 }
