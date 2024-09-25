@@ -21,7 +21,7 @@ public class SystemInit implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-
+        createSuperAdmin();
     }
 
 
@@ -30,7 +30,6 @@ public class SystemInit implements CommandLineRunner {
      *
      * */
     public void createSuperAdmin(){
-
-        userService.createUser(User.builder().userId(1).email("admin@admin.com").build());
+        userService.createUser(User.builder().userId(1).userName("userAdmin").email("admin@admin.com").build());
     }
 }
