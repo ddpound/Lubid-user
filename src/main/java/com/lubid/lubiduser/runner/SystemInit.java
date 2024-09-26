@@ -1,7 +1,9 @@
 package com.lubid.lubiduser.runner;
 
 import com.lubid.lubiduser.Service.UserService;
+import com.lubid.lubiduser.enumpack.AuthAndRoles;
 import com.lubid.lubiduser.model.User;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.boot.CommandLineRunner;
@@ -29,7 +31,20 @@ public class SystemInit implements CommandLineRunner {
      * super user 의 아이디는 1
      *
      * */
+    @Transactional
     public void createSuperAdmin(){
-        userService.createUser(User.builder().userId(1).userName("userAdmin").email("admin@admin.com").build());
+
+        if (userService.findUser(1) == null){
+            User user = User.builder()
+                    .userId(1)
+                    .userName("userAdmin")
+                    .email("admin@admin.com")
+                    .oauth(AuthAndRoles.Admin)
+                    .build();
+
+            user.createData(1L);
+
+            userService.createUser(user);
+        }
     }
 }
