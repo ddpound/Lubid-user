@@ -15,7 +15,7 @@ public class MyAuctionList extends CommonColumn{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int myAuctionListId;
+    private Long myAuctionListId;
 
     @ManyToOne
     private User user;

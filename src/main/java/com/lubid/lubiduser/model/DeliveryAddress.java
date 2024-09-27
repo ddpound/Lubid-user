@@ -13,7 +13,7 @@ public class DeliveryAddress extends CommonColumn {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int deliveryId;
+    private Long deliveryId;
 
     @Setter
     @ManyToOne(fetch = FetchType.LAZY)

@@ -20,7 +20,7 @@ public class WishList extends CommonColumn{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public int wishListId;
+    public Long wishListId;
 
     @ManyToOne
     public User user;

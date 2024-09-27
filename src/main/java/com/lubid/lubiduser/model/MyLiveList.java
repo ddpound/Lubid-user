@@ -19,7 +19,7 @@ public class MyLiveList {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int myLiveListId;
+    private Long myLiveListId;
 
     @ManyToOne
     private User user;

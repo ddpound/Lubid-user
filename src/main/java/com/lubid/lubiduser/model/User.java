@@ -21,7 +21,7 @@ public class User extends CommonColumn{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int userId;
+    private Long userId;
 
     @Column(unique = true)
     private String userName;

@@ -55,7 +55,7 @@ public class TestUserService {
     private final MakeJWT makeJWT;
 
     @Transactional(readOnly = true)
-    public UserDto findUser(int userId){
+    public UserDto findUser(Long userId){
         Optional<User> resultUser = userRepository.findById(userId);
 
         return new UserDto(resultUser.get());

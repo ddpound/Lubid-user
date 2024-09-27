@@ -17,7 +17,7 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserDto {
-    private int userId;
+    private Long userId;
     private String userName;
     private String email;
     private AuthAndRoles oauth;

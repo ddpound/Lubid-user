@@ -30,3 +30,9 @@ eureka:
     fetch-registry: true
     service-url:
       defaultZone: http://116.32.208.215:8761/eureka
+
+system-data:
+  super-admin-name: superAdmin
+  super-admin-pwd: 1234
+
+

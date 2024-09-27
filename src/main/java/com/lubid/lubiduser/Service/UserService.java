@@ -40,15 +40,21 @@ public class UserService {
     private final MakeJWT makeJWT;
 
     @Transactional(readOnly = true)
-    public UserDto findUser(int userId){
+    public UserDto findUser(Long userId){
         Optional<User> resultUser = userRepository.findById(userId);
 
-        return new UserDto(resultUser.get());
+        return resultUser.map(UserDto::new).orElse(null);
     }
 
     public UserDto findUserName(String username){
         User findUser = userRepository.findByUserName(username);
         return new UserDto(findUser);
+    }
+
+    @Transactional
+    public Integer saveUser(User user){
+        userRepository.save(user);
+        return 1;
     }
 
     @Transactional

@@ -16,7 +16,7 @@ public class JwtMappingUser {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
 
     @JoinColumn
     @OneToOne(fetch = FetchType.LAZY)
