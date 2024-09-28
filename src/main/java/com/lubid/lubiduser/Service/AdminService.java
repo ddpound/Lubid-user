@@ -19,9 +19,21 @@ public class AdminService {
      * 어드민 권한을 주는 메소드
      * */
     public ResponseEntity giveAdminAuthority(User user){
-
-
         return new ResponseEntity("", HttpStatus.OK);
+    }
+
+    /**
+     * 모든 유저의 데이터 확인
+     * */
+    public ResponseEntity<User> findAllUser(){
+        return new ResponseEntity(userRepository.findAll(), HttpStatus.OK);
+    }
+
+    /**
+     * 유저 검색
+     * */
+    public ResponseEntity<User> findUserByUsername(String username){
+        return new ResponseEntity<>(userRepository.findByUserName(username), HttpStatus.OK);
     }
 
 }
